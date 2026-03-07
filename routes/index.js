@@ -1,10 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const contactsController = require('../controllers/contacts');
 
+router.get('/', (req, res) => { res.send('Welcome to the Contacts API! Use /contacts in the URL to view data.');});
 
-router.get('/contacts', contactsController.getAll);
-
-router.get('/contacts/:id', contactsController.getSingle);
+router.use('/contacts', require('./contacts'));
 
 module.exports = router;
