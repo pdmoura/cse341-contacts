@@ -35,3 +35,6 @@ logs/
 .cache/
 tmp/
 temp/
+
+# test routes file
+routes.rest
