@@ -6,7 +6,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 const app = express();
 const mongodb = require('./db/connect');
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 3000;
 
 app.use('/', require('./routes'));
 
