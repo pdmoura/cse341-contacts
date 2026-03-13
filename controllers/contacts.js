@@ -84,13 +84,13 @@ const updateContact = async (req, res) => {
 			return;
 		}
 
-		// Build the update object dynamically, ignoring Swagger UI defaults ("string", "any")
+		// Build the update object dynamically
 		const updateData = {};
-		if (req.body.firstName && req.body.firstName !== "string" && req.body.firstName !== "any") updateData.firstName = req.body.firstName;
-		if (req.body.lastName && req.body.lastName !== "string" && req.body.lastName !== "any") updateData.lastName = req.body.lastName;
-		if (req.body.email && req.body.email !== "string" && req.body.email !== "any") updateData.email = req.body.email;
-		if (req.body.favoriteColor && req.body.favoriteColor !== "string" && req.body.favoriteColor !== "any") updateData.favoriteColor = req.body.favoriteColor;
-		if (req.body.birthday && req.body.birthday !== "string" && req.body.birthday !== "any") updateData.birthday = req.body.birthday;
+		if (req.body.firstName) updateData.firstName = req.body.firstName;
+		if (req.body.lastName) updateData.lastName = req.body.lastName;
+		if (req.body.email) updateData.email = req.body.email;
+		if (req.body.favoriteColor) updateData.favoriteColor = req.body.favoriteColor;
+		if (req.body.birthday) updateData.birthday = req.body.birthday;
 
 		if (Object.keys(updateData).length === 0) {
 			res.status(400).send({ message: "No valid fields provided to update." });
