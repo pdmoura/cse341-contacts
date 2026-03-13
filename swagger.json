@@ -5,10 +5,10 @@
     "description": "Contacts API, CRUD operations for contacts using MongoDB",
     "version": "1.0.0"
   },
-  "host": "https://cse341-contacts-24un.onrender.com",
+  "host": "cse341-contacts-24un.onrender.com",
   "basePath": "/",
   "schemes": [
-    "http"
+    "https"
   ],
   "paths": {
     "/": {
