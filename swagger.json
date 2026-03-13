@@ -5,10 +5,10 @@
     "description": "Contacts API, CRUD operations for contacts using MongoDB",
     "version": "1.0.0"
   },
-  "host": "cse341-contacts-24un.onrender.com",
+  "host": "localhost:8080",
   "basePath": "/",
   "schemes": [
-    "https"
+    "http"
   ],
   "paths": {
     "/": {
@@ -101,7 +101,7 @@
         }
       },
       "put": {
-        "description": "",
+        "description": "Update a specific contact by ID",
         "parameters": [
           {
             "name": "id",
@@ -112,23 +112,29 @@
           {
             "name": "body",
             "in": "body",
+            "description": "Fields to update for the contact. You only need to send the fields you want to update.",
             "schema": {
               "type": "object",
               "properties": {
                 "firstName": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "string"
                 },
                 "lastName": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "string"
                 },
                 "email": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "string"
                 },
                 "favoriteColor": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "string"
                 },
                 "birthday": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "string"
                 }
               }
             }

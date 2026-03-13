@@ -61,6 +61,20 @@ const createContact = async (req, res) => {
 };
 
 const updateContact = async (req, res) => {
+	/*
+		#swagger.description = 'Update a specific contact by ID'
+		#swagger.parameters['body'] = {
+			in: 'body',
+			description: 'Fields to update for the contact. You only need to send the fields you want to update.',
+			schema: {
+				firstName: "string",
+				lastName: "string",
+				email: "string",
+				favoriteColor: "string",
+				birthday: "string"
+			}
+		}
+	*/
 	try {
 		const userId = new ObjectId(req.params.id);
 		
