@@ -118,23 +118,23 @@
               "properties": {
                 "firstName": {
                   "type": "string",
-                  "example": "string"
+                  "example": ""
                 },
                 "lastName": {
                   "type": "string",
-                  "example": "string"
+                  "example": ""
                 },
                 "email": {
                   "type": "string",
-                  "example": "string"
+                  "example": ""
                 },
                 "favoriteColor": {
                   "type": "string",
-                  "example": "string"
+                  "example": ""
                 },
                 "birthday": {
                   "type": "string",
-                  "example": "string"
+                  "example": ""
                 }
               }
             }
