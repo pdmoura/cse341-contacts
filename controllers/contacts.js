@@ -67,11 +67,11 @@ const updateContact = async (req, res) => {
 			in: 'body',
 			description: 'Fields to update for the contact. You only need to send the fields you want to update.',
 			schema: {
-				firstName: "any",
-				lastName: "any",
-				email: "any",
-				favoriteColor: "any",
-				birthday: "any"
+				firstName: "John",
+				lastName: "Doe",
+				email: "john.doe@example.com",
+				favoriteColor: "blue",
+				birthday: "2000-01-15"
 			}
 		}
 	*/
