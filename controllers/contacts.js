@@ -92,7 +92,6 @@ const updateContact = async (req, res) => {
 	try {
 		const userId = new ObjectId(req.params.id);
 		
-		// Ensure that at least one field is being updated
 		if (!req.body.firstName && !req.body.lastName && !req.body.email && !req.body.favoriteColor && !req.body.birthday) {
 			res.status(400).send({ message: "Content can not be empty! Please provide at least one field to update." });
 			return;
