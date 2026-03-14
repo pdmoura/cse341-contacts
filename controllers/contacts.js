@@ -31,6 +31,20 @@ const getSingle = async (req, res) => {
 };
 
 const createContact = async (req, res) => {
+	/*
+		#swagger.description = 'Create a new contact'
+		#swagger.parameters['body'] = {
+			in: 'body',
+			description: 'Contact data',
+			schema: {
+				firstName: "John",
+				lastName: "Doe",
+				email: "john.doe@example.com",
+				favoriteColor: "blue",
+				birthday: "2000-01-15"
+			}
+		}
+	*/
 	try {
 		if (!req.body.firstName || !req.body.lastName || !req.body.email || !req.body.favoriteColor || !req.body.birthday) {
 			res.status(400).send({ message: "Content can not be empty!" });
