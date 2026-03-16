@@ -116,7 +116,7 @@ const updateContact = async (req, res) => {
 			.collection("contacts")
 			.updateOne({ _id: userId }, { $set: updateData });
 
-		if (response.modifiedCount > 0) {
+		if (response.matchedCount > 0) { 
 			res.status(204).send();
 		} else {
 			res.status(404).json({ error: "Contact not found" });
