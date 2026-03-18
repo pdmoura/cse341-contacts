@@ -1,36 +1,58 @@
-const Contact = require("../models/contact");
+const mongodb = require("../db/connect");
+const ObjectId = require("mongodb").ObjectId;
 
 const getAll = async (req, res) => {
-	try {
-		const contacts = await Contact.find();
-		res.setHeader("Content-Type", "application/json");
-		res.status(200).json(contacts);
-	} catch (error) {
-		res.status(500).json({ error: error.message });
-	}
+  const result = await mongodb.getDb().db().collection("contacts").find();
+  result.toArray().then((lists) => {
+    res.setHeader("Content-Type", "application/json");
+    res.status(200).json(lists);
+  });
 };
 
 const getSingle = async (req, res) => {
-	try {
-		const contact = await Contact.findById(req.params.id);
-		if (contact) {
-			res.setHeader("Content-Type", "application/json");
-			res.status(200).json(contact);
-		} else {
-			res.status(404).json({ error: "Contact not found" });
-		}
-	} catch (error) {
-		if (error.name === "CastError") {
-			res.status(400).json({ error: "Invalid contact ID" });
-		} else {
-			res.status(500).json({ error: error.message });
-		}
-	}
+  try {
+    const userId = new ObjectId(req.params.id);
+    const result = await mongodb
+      .getDb()
+      .db()
+      .collection("contacts")
+      .find({ _id: userId });
+    result.toArray().then((lists) => {
+      if (lists.length > 0) {
+        res.setHeader("Content-Type", "application/json");
+        res.status(200).json(lists[0]);
+      } else {
+        res.status(404).json({ error: "Contact not found" });
+      }
+    });
+  } catch (error) {
+    res.status(400).json({ error: "Invalid contact ID" });
+  }
 };
 
 const createContact = async (req, res) => {
-	/*
-		#swagger.description = 'Create a new contact'
+  /*
+    #swagger.description = 'Create a new contact'
+    #swagger.parameters['body'] = {
+      in: 'body',
+      description: 'Contact data',
+      schema: {
+        firstName: "John",
+        lastName: "Doe",
+        email: "john.doe@example.com",
+        favoriteColor: "blue",
+        birthday: "2000-01-15"
+      }
+    }
+  */
+  try {
+    const contact = {
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      email: req.body.email,
+      favoriteColor: req.body.favoriteColor,
+      birthday: req.body.birthday,
+    };
 		#swagger.parameters['body'] = {
 			in: 'body',
 			description: 'Contact data',
