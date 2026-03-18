@@ -172,5 +172,7 @@ module.exports = {
 	getSingle,
 	createContact,
 	updateContact,
-	deleteContact,
+	deleteContact
+}
 };
+
