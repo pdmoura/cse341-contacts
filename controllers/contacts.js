@@ -1,32 +1,30 @@
-const mongodb = require("../db/connect");
-const ObjectId = require("mongodb").ObjectId;
+const Contact = require("../models/contact");
 
 const getAll = async (req, res) => {
-	const result = await mongodb.getDb().db().collection("contacts").find();
-	result.toArray().then((lists) => {
+	try {
+		const contacts = await Contact.find();
 		res.setHeader("Content-Type", "application/json");
-		res.status(200).json(lists);
-	});
+		res.status(200).json(contacts);
+	} catch (error) {
+		res.status(500).json({ error: error.message });
+	}
 };
 
 const getSingle = async (req, res) => {
 	try {
-		const userId = new ObjectId(req.params.id);
-		const result = await mongodb
-			.getDb()
-			.db()
-			.collection("contacts")
-			.find({ _id: userId });
-		result.toArray().then((lists) => {
-			if (lists.length > 0) {
-				res.setHeader("Content-Type", "application/json");
-				res.status(200).json(lists[0]);
-			} else {
-				res.status(404).json({ error: "Contact not found" });
-			}
-		});
+		const contact = await Contact.findById(req.params.id);
+		if (contact) {
+			res.setHeader("Content-Type", "application/json");
+			res.status(200).json(contact);
+		} else {
+			res.status(404).json({ error: "Contact not found" });
+		}
 	} catch (error) {
-		res.status(400).json({ error: "Invalid contact ID" });
+		if (error.name === "CastError") {
+			res.status(400).json({ error: "Invalid contact ID" });
+		} else {
+			res.status(500).json({ error: error.message });
+		}
 	}
 };
 
@@ -46,31 +44,25 @@ const createContact = async (req, res) => {
 		}
 	*/
 	try {
-		if (!req.body.firstName || !req.body.lastName || !req.body.email || !req.body.favoriteColor || !req.body.birthday) {
-			res.status(400).send({ message: "Content can not be empty!" });
-			return;
-		}
-		const contact = {
+		const contact = new Contact({
 			firstName: req.body.firstName,
 			lastName: req.body.lastName,
 			email: req.body.email,
 			favoriteColor: req.body.favoriteColor,
 			birthday: req.body.birthday,
-		};
+		});
 
-		const response = await mongodb
-			.getDb()
-			.db()
-			.collection("contacts")
-			.insertOne(contact);
-
-		if (response.acknowledged) {
-			res.status(201).json({ id: response.insertedId });
-		} else {
-			res.status(500).json({ error: "Failed to create contact" });
-		}
+		const savedContact = await contact.save();
+		res.status(201).json({ id: savedContact._id });
 	} catch (error) {
-		res.status(500).json({ error: error.message });
+		if (error.name === "ValidationError") {
+			const errors = Object.values(error.errors).map(
+				(err) => err.message,
+			);
+			res.status(400).json({ error: errors.join(", ") });
+		} else {
+			res.status(500).json({ error: error.message });
+		}
 	}
 };
 
@@ -90,10 +82,17 @@ const updateContact = async (req, res) => {
 		}
 	*/
 	try {
-		const userId = new ObjectId(req.params.id);
-		
-		if (!req.body.firstName && !req.body.lastName && !req.body.email && !req.body.favoriteColor && !req.body.birthday) {
-			res.status(400).send({ message: "Content can not be empty! Please provide at least one field to update." });
+		if (
+			!req.body.firstName &&
+			!req.body.lastName &&
+			!req.body.email &&
+			!req.body.favoriteColor &&
+			!req.body.birthday
+		) {
+			res.status(400).send({
+				message:
+					"Content can not be empty! Please provide at least one field to update.",
+			});
 			return;
 		}
 
@@ -102,46 +101,47 @@ const updateContact = async (req, res) => {
 		if (req.body.firstName) updateData.firstName = req.body.firstName;
 		if (req.body.lastName) updateData.lastName = req.body.lastName;
 		if (req.body.email) updateData.email = req.body.email;
-		if (req.body.favoriteColor) updateData.favoriteColor = req.body.favoriteColor;
+		if (req.body.favoriteColor)
+			updateData.favoriteColor = req.body.favoriteColor;
 		if (req.body.birthday) updateData.birthday = req.body.birthday;
 
-		if (Object.keys(updateData).length === 0) {
-			res.status(400).send({ message: "No valid fields provided to update." });
-			return;
-		}
+		const updatedContact = await Contact.findByIdAndUpdate(
+			req.params.id,
+			{ $set: updateData },
+			{ new: true, runValidators: true },
+		);
 
-		const response = await mongodb
-			.getDb()
-			.db()
-			.collection("contacts")
-			.updateOne({ _id: userId }, { $set: updateData });
-
-		if (response.matchedCount > 0) { 
+		if (updatedContact) {
 			res.status(204).send();
 		} else {
 			res.status(404).json({ error: "Contact not found" });
 		}
 	} catch (error) {
-		res.status(500).json({ error: error.message });
+		if (error.name === "ValidationError") {
+			const errors = Object.values(error.errors).map(
+				(err) => err.message,
+			);
+			res.status(400).json({ error: errors.join(", ") });
+		} else {
+			res.status(500).json({ error: error.message });
+		}
 	}
 };
 
 const deleteContact = async (req, res) => {
 	try {
-		const userId = new ObjectId(req.params.id);
-		const response = await mongodb
-			.getDb()
-			.db()
-			.collection("contacts")
-			.deleteOne({ _id: userId });
-
-		if (response.deletedCount > 0) {
+		const deletedContact = await Contact.findByIdAndDelete(req.params.id);
+		if (deletedContact) {
 			res.status(204).send();
 		} else {
 			res.status(404).json({ error: "Contact not found" });
 		}
 	} catch (error) {
-		res.status(500).json({ error: error.message });
+		if (error.name === "CastError") {
+			res.status(400).json({ error: "Invalid contact ID" });
+		} else {
+			res.status(500).json({ error: error.message });
+		}
 	}
 };
 
