@@ -96,6 +96,8 @@ const updateContact = async (req, res) => {
 		}
 	*/
 	try {
+		const userId = new ObjectId(req.params.id);
+
 		if (
 			!req.body.firstName &&
 			!req.body.lastName &&
@@ -118,6 +120,13 @@ const updateContact = async (req, res) => {
 		if (req.body.favoriteColor)
 			updateData.favoriteColor = req.body.favoriteColor;
 		if (req.body.birthday) updateData.birthday = req.body.birthday;
+
+		if (Object.keys(updateData).length === 0) {
+			res.status(400).send({
+				message: "No valid fields provided to update.",
+			});
+			return;
+		}
 
 		const response = await mongodb
 			.getDb()
